@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-set -x
 set -e
+set -x
 
 cmake --build build
 
-./build/main "$@"
+./build/ffforge "$@"

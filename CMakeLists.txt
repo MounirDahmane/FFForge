@@ -1,41 +1,37 @@
-cmake_minimum_required(VERSION 3.17)
-
-project(ffmpeg-transcode-cli C CXX)
+cmake_minimum_required(VERSION 3.16)
+project(FFForge CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
+# ── Sources ────────────────────────────────────────────────────────────────────
+add_executable(ffforge
+    src/main.cpp
+    src/encoder.cpp
+    src/decoder.cpp
+    src/transcoder.cpp
+    src/utils.cpp
+)
 
+target_include_directories(ffforge PRIVATE include)
+
+# ── FFmpeg ─────────────────────────────────────────────────────────────────────
+# Requires libavcodec, libavformat, libavutil to be installed system-wide
+# (e.g. `sudo apt install libavcodec-dev libavformat-dev libavutil-dev`).
 find_package(PkgConfig REQUIRED)
-
-pkg_check_modules(AVFORMAT    REQUIRED IMPORTED_TARGET libavformat)
-pkg_check_modules(AVCODEC     REQUIRED IMPORTED_TARGET libavcodec)
-pkg_check_modules(AVFILTER    REQUIRED IMPORTED_TARGET libavfilter)
-pkg_check_modules(AVDEVICE    REQUIRED IMPORTED_TARGET libavdevice)
-pkg_check_modules(AVUTIL      REQUIRED IMPORTED_TARGET libavutil)
-pkg_check_modules(SWRESAMPLE  REQUIRED IMPORTED_TARGET libswresample)
-pkg_check_modules(SWSCALE     REQUIRED IMPORTED_TARGET libswscale)
-
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-add_executable(main ${SOURCES})
-
-target_compile_options(main PUBLIC
-    -fdiagnostics-color=always
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Wno-unused
-    -O2
+pkg_check_modules(FFMPEG REQUIRED
+    libavcodec
+    libavformat
+    libavutil
 )
 
-target_link_libraries(
-    main
-    PkgConfig::AVFORMAT
-    PkgConfig::AVCODEC
-    PkgConfig::AVFILTER
-    PkgConfig::AVDEVICE
-    PkgConfig::AVUTIL
-    PkgConfig::SWRESAMPLE
-    PkgConfig::SWSCALE 
-)
+target_include_directories(ffforge PRIVATE ${FFMPEG_INCLUDE_DIRS})
+target_link_libraries(ffforge PRIVATE ${FFMPEG_LIBRARIES})
+target_compile_options(ffforge PRIVATE ${FFMPEG_CFLAGS_OTHER})
+
+# ── Warnings ───────────────────────────────────────────────────────────────────
+if(MSVC)
+    target_compile_options(ffforge PRIVATE /W4)
+else()
+    target_compile_options(ffforge PRIVATE -Wall -Wextra -Wpedantic)
+endif()

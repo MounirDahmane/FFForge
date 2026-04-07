@@ -1,3 +1,23 @@
+# ── FFForge outputs ────────────────────────────────────────────────────────────
+build/
+frames/
+*.mp4
+*.pgm
+
+# ── CMake ──────────────────────────────────────────────────────────────────────
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+install_manifest.txt
+CTestTestfile.cmake
+
+# ── Ninja ──────────────────────────────────────────────────────────────────────
+.ninja_deps
+.ninja_log
+
+# ── C / C++ (generic) ──────────────────────────────────────────────────────────
+
 # Prerequisites
 *.d
 
@@ -51,5 +71,14 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# debug information files
+# Debug information files
 *.dwo
+
+# ── Editor / OS ────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
